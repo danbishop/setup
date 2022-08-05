@@ -12,6 +12,9 @@ else
     echo "Not running a distribution with /etc/os-release available"
 fi
 
+# Correct icon sizes
+gsettings set org.gnome.nautilus.icon-view default-zoom-level 'large'
+
 # Show seconds on clock
 gsettings set org.gnome.desktop.interface clock-show-seconds true
 
