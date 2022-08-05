@@ -1,0 +1,51 @@
+#!/bin/bash
+
+# Get Ubuntu codename, e.g. jammy, dapper, warty, etc.
+if [[ -r /etc/os-release ]]; then
+    . /etc/os-release
+    if [[ $ID = ubuntu ]]; then
+        echo "Running $UBUNTU_CODENAME"
+    else
+        echo "Not running an Ubuntu distribution. ID=$ID, VERSION=$VERSION"
+    fi
+else
+    echo "Not running a distribution with /etc/os-release available"
+fi
+
+# Show seconds on clock
+gsettings set org.gnome.desktop.interface clock-show-seconds true
+
+# Set desktop
+gsettings set org.gnome.desktop.background picture-uri "file:///usr/share/backgrounds/contest/$UBUNTU_CODENAME.xml"
+
+# Enable dark mode
+gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+gsettings set org.gnome.desktop.interface gtk-theme 'Yaru-dark'
+gsettings set org.gnome.gedit.preferences.editor scheme 'Yaru-dark'
+
+# Install VSCode
+sudo snap install code --classic
+
+# Install other snaps
+sudo snap install spotify kita slack
+
+# Update apt
+sudo apt update
+sudo apt dist-upgrade -y
+
+# Install apt packages
+sudo apt install -y git curl
+
+# Install Zoom and keep it up to date
+sudo mkdir /opt/zoom-updater
+sudo cp ./files/zoom-update.sh /opt/zoom-updater/zoom-update.sh
+sudo chmod +x /opt/zoom-updater/zoom-update.sh
+
+sudo cp ./files/zoom-update.timer /etc/systemd/system/zoom-update.timer
+sudo cp ./files/zoom-update.service /etc/systemd/system/zoom-update.service
+
+sudo systemctl enable --now zoom-update.timer
+sudo systemctl start zoom-update.service
+# output systemd status/logs
+systemctl --no-pager status zoom-update.timer
+systemctl --no-pager status zoom-update.service
