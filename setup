@@ -56,3 +56,5 @@ systemctl --no-pager status zoom-update.service
 
 # Set gitconfig
 cp ./files/.gitconfig ~/
+
+echo "All done 🙂"
