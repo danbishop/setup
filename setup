@@ -13,11 +13,20 @@ else
 fi
 
 # Install bitwarden-cli
+sudo snap install bw
+
+# Login
 if bw login --check ; then
     echo "BitWarden is logged in."
-elif test=$(bw login | grep 'export') ; then
+    if bw_unlock=$(bw unlock | grep 'export') ; then
+        eval "${bw_unlock:2}"
+    else
+        echo "Failed to unlock BitWarden. Wrong password?. Try again."
+        exit 1
+    fi
+elif bw_login=$(bw login | grep 'export') ; then
     # Log in to BitWarden CLI (ignore '$ ' that precedes export command)
-    eval "${test:2}"
+    eval "${bw_login:2}"
 else
     echo "Failed to login to BitWarden. Start again."
     exit 1
@@ -67,7 +76,12 @@ sudo cp ./files/zoom-update.service /etc/systemd/system/zoom-update.service
 sudo systemctl enable --now zoom-update.timer
 sudo systemctl start zoom-update.service
 echo 100
+
 # Set gitconfig
 cp ./files/.gitconfig ~/
+
+# Hide files
+echo 'snap' >> ~/.hidden
+
 } | whiptail --title 'Test script' --gauge 'Running...' 6 60 0
 echo "All done 🙂"
