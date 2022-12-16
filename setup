@@ -30,14 +30,14 @@ gsettings set org.gnome.gedit.preferences.editor scheme 'Yaru-dark'
 sudo snap install code --classic
 
 # Install other snaps
-sudo snap install spotify kita slack
+sudo snap install spotify kita slack openttd warzone2100
 
 # Update apt
 sudo apt update
 sudo apt dist-upgrade -y
 
 # Install apt packages
-sudo apt install -y git curl
+sudo apt install -y git curl ssh
 
 # Install Zoom and keep it up to date
 sudo mkdir /opt/zoom-updater
@@ -49,6 +49,7 @@ sudo cp ./files/zoom-update.service /etc/systemd/system/zoom-update.service
 
 sudo systemctl enable --now zoom-update.timer
 sudo systemctl start zoom-update.service
+
 # output systemd status/logs
 systemctl --no-pager status zoom-update.timer
 systemctl --no-pager status zoom-update.service
