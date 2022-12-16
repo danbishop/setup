@@ -12,49 +12,62 @@ else
     echo "Not running a distribution with /etc/os-release available"
 fi
 
-# Correct icon sizes
-gsettings set org.gnome.nautilus.icon-view default-zoom-level 'large'
+# Install bitwarden-cli
+if bw login --check ; then
+    echo "BitWarden is logged in."
+elif test=$(bw login | grep 'export') ; then
+    # Log in to BitWarden CLI (ignore '$ ' that precedes export command)
+    eval "${test:2}"
+else
+    echo "Failed to login to BitWarden. Start again."
+    exit 1
+fi
 
+# Get id_rsa and id_rsa.pub from BW
+bw get notes c8c5dca7-aad6-4bd7-8df1-af29010dbf43 > ~/.ssh/id_rsa.pub
+chmod 600 ~/.ssh/id_rsa.pub
+bw get notes aafebb4e-10a3-45bf-9f50-af29010d7a59 > ~/.ssh/id_rsa
+chmod 600 ~/.ssh/id_rsa
+
+{
+# Correct icon sizes
+echo -e "XXX\n10\nChanging Gnome settings... \nXXX"
+gsettings set org.gnome.nautilus.icon-view default-zoom-level 'large'
 # Show seconds on clock
 gsettings set org.gnome.desktop.interface clock-show-seconds true
-
 # Set desktop
 gsettings set org.gnome.desktop.background picture-uri "file:///usr/share/backgrounds/contest/$UBUNTU_CODENAME.xml"
-
 # Enable dark mode
 gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 gsettings set org.gnome.desktop.interface gtk-theme 'Yaru-dark'
 gsettings set org.gnome.gedit.preferences.editor scheme 'Yaru-dark'
 
 # Install VSCode
-sudo snap install code --classic
+echo -e "XXX\n30\nInstalling classic snaps... \nXXX"
+sudo snap install code --classic > /dev/null 2>&1
 
 # Install other snaps
-sudo snap install spotify kita slack openttd warzone2100
-
+sudo snap install spotify kita slack openttd warzone2100 bitwarden > /dev/null 2>&1
+echo -e "XXX\n40\nInstalling snaps... \nXXX"
 # Update apt
-sudo apt update
-sudo apt dist-upgrade -y
+sudo apt-get update > /dev/null 2>&1
+sudo apt-get dist-upgrade -y > /dev/null 2>&1
 
 # Install apt packages
-sudo apt install -y git curl ssh
+sudo apt-get install -y git curl ssh
 
 # Install Zoom and keep it up to date
-sudo mkdir /opt/zoom-updater
-sudo cp ./files/zoom-update.sh /opt/zoom-updater/zoom-update.sh
-sudo chmod +x /opt/zoom-updater/zoom-update.sh
+sudo mkdir /opt/zoom-updater > /dev/null 2>&1
+sudo cp ./files/zoom-update.sh /opt/zoom-updater/zoom-update.sh > /dev/null 2>&1
+sudo chmod +x /opt/zoom-updater/zoom-update.sh > /dev/null 2>&1
 
 sudo cp ./files/zoom-update.timer /etc/systemd/system/zoom-update.timer
 sudo cp ./files/zoom-update.service /etc/systemd/system/zoom-update.service
 
 sudo systemctl enable --now zoom-update.timer
 sudo systemctl start zoom-update.service
-
-# output systemd status/logs
-systemctl --no-pager status zoom-update.timer
-systemctl --no-pager status zoom-update.service
-
+echo 100
 # Set gitconfig
 cp ./files/.gitconfig ~/
-
+} | whiptail --title 'Test script' --gauge 'Running...' 6 60 0
 echo "All done 🙂"
