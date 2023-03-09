@@ -38,9 +38,7 @@ chmod 600 ~/.ssh/id_rsa.pub
 bw get notes aafebb4e-10a3-45bf-9f50-af29010d7a59 > ~/.ssh/id_rsa
 chmod 600 ~/.ssh/id_rsa
 
-{
 # Correct icon sizes
-echo -e "XXX\n10\nChanging Gnome settings... \nXXX"
 gsettings set org.gnome.nautilus.icon-view default-zoom-level 'large'
 # Show seconds on clock
 gsettings set org.gnome.desktop.interface clock-show-seconds true
@@ -52,12 +50,11 @@ gsettings set org.gnome.desktop.interface gtk-theme 'Yaru-dark'
 gsettings set org.gnome.gedit.preferences.editor scheme 'Yaru-dark'
 
 # Install VSCode
-echo -e "XXX\n30\nInstalling classic snaps... \nXXX"
 sudo snap install code --classic > /dev/null 2>&1
 
 # Install other snaps
 sudo snap install spotify kita slack openttd warzone2100 bitwarden > /dev/null 2>&1
-echo -e "XXX\n40\nInstalling snaps... \nXXX"
+
 # Update apt
 sudo apt-get update > /dev/null 2>&1
 sudo apt-get dist-upgrade -y > /dev/null 2>&1
@@ -75,13 +72,14 @@ sudo cp ./files/zoom-update.service /etc/systemd/system/zoom-update.service
 
 sudo systemctl enable --now zoom-update.timer
 sudo systemctl start zoom-update.service
-echo 100
+
 
 # Set gitconfig
 cp ./files/.gitconfig ~/
 
+# Set dock favourites
+gsettings set org.gnome.shell favorite-apps "['firefox_firefox.desktop', 'org.gnome.Nautilus.desktop', 'rhythmbox.desktop', 'snap-store_ubuntu-software.desktop', 'code_code.desktop', 'spotify_spotify.desktop', 'org.gnome.Terminal.desktop', 'Zoom.desktop']"
+
 # Hide files
 echo 'snap' >> ~/.hidden
-
-} | whiptail --title 'Test script' --gauge 'Running...' 6 60 0
 echo "All done 🙂"
