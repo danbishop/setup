@@ -82,4 +82,16 @@ gsettings set org.gnome.shell favorite-apps "['firefox_firefox.desktop', 'org.gn
 
 # Hide files
 echo 'snap' >> ~/.hidden
+
+# Create Prokects folder if not exist
+mkdir -p ~/Projects
+
+# Clone some git repos
+git -C ~/Projects clone git@github.com:danbishop/setup.git
+git -C ~/Projects clone git@github.com:danbishop/server-setup.git
+git -C ~/Projects clone git@github.com:danbishop/homeassistant.git
+git -C ~/Projects clone git@github.com:danbishop/danbishop.uk.git
+
+
 echo "All done 🙂"
+
