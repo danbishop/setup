@@ -60,7 +60,7 @@ sudo apt-get update > /dev/null 2>&1
 sudo apt-get dist-upgrade -y > /dev/null 2>&1
 
 # Install apt packages
-sudo apt-get install -y git curl ssh
+sudo apt-get install -y git curl ssh build-essential ruby ruby-dev
 
 # Install Zoom and keep it up to date
 sudo mkdir /opt/zoom-updater > /dev/null 2>&1
