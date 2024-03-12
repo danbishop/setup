@@ -38,8 +38,25 @@ chmod 600 ~/.ssh/id_rsa.pub
 bw get notes aafebb4e-10a3-45bf-9f50-af29010d7a59 > ~/.ssh/id_rsa
 chmod 600 ~/.ssh/id_rsa
 
+# Backups
+gsettings set org.gnome.DejaDup backend 'remote'
+gsettings set org.gnome.DejaDup delete-after 182
+gsettings set org.gnome.DejaDup exclude-list ['$TRASH', '$DOWNLOAD']
+gsettings set org.gnome.DejaDup full-backup-period 90
+gsettings set org.gnome.DejaDup include-list "['$HOME/Videos', '$HOME/Templates', '$HOME/Public', '$HOME/Projects', '$HOME/Pictures', '$HOME/Obsidian', '$HOME/FiraxisLive', '$HOME/Documents', '$HOME/.vscode', '$HOME/.steam', '$HOME/.ssh', '$HOME/.gnupg', '$HOME/snap/firefox', '$HOME/snap/bitwarden']"
+gsettings set org.gnome.DejaDup periodic true
+gsettings set org.gnome.DejaDup periodic-period 7
+gsettings set org.gnome.DejaDup prompt-check 'disabled'
+gsettings set org.gnome.DejaDup tool 'duplicity'
+gsettings set org.gnome.DejaDup.Drive folder '$HOSTNAME'
+gsettings set org.gnome.DejaDup.Remote folder '$HOSTNAME'
+gsettings set org.gnome.DejaDup.Remote uri 'davs://dan@cloud.danbishop.uk/remote.php/webdav/Backup%20and%20Recovery'
+
+# Restore Backup
+# deja-dup --restore *
+
 # Correct icon sizes
-gsettings set org.gnome.nautilus.icon-view default-zoom-level 'large'
+gsettings set org.gnome.nautilus.icon-view default-zoom-level 'medium'
 # Show seconds on clock
 gsettings set org.gnome.desktop.interface clock-show-seconds true
 # Set desktop
