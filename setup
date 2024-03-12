@@ -47,7 +47,6 @@ gsettings set org.gnome.desktop.background picture-uri "file:///usr/share/backgr
 # Enable dark mode
 gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 gsettings set org.gnome.desktop.interface gtk-theme 'Yaru-dark'
-gsettings set org.gnome.gedit.preferences.editor scheme 'Yaru-dark'
 
 # Install VSCode
 sudo snap install code --classic > /dev/null 2>&1
@@ -89,7 +88,6 @@ mkdir -p ~/Projects
 # Clone some git repos
 git -C ~/Projects clone git@github.com:danbishop/setup.git
 git -C ~/Projects clone git@github.com:danbishop/server-setup.git
-git -C ~/Projects clone git@github.com:danbishop/homeassistant.git
 git -C ~/Projects clone git@github.com:danbishop/danbishop.uk.git
 
 # Finished
