@@ -42,6 +42,7 @@ chmod 600 ~/.ssh/id_rsa
 export PASSPHRASE="$(bw get notes "Backup: $HOSTNAME")"
 export FTP_PASSWORD="$(bw get password cloud.danbishop.uk)"
 # Restore backup
+sudo apt install -y deja-dup
 duplicity restore --force webdavs://dan@cloud.danbishop.uk/remote.php/webdav/Backup%20and%20Recovery/$HOSTNAME ~/tmp
 mv -f ~/tmp/home/$USER ~
 rm -rf ~/tmp
