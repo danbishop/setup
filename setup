@@ -17,19 +17,19 @@ sudo snap install bw
 
 # Login
 if bw login --check ; then
-    echo "BitWarden is logged in."
-    if bw_unlock=$(bw unlock | grep 'export') ; then
-        eval "${bw_unlock:2}"
-    else
-        echo "Failed to unlock BitWarden. Wrong password?. Try again."
-        exit 1
-    fi
-elif bw_login=$(bw login | grep 'export') ; then
-    # Log in to BitWarden CLI (ignore '$ ' that precedes export command)
-    eval "${bw_login:2}"
-else
-    echo "Failed to login to BitWarden. Start again."
+  echo "BitWarden is logged in."
+  if bw_unlock=$(bw unlock | grep 'export') ; then
+    eval "${bw_unlock:2}"
+  else
+    echo "Failed to unlock BitWarden. Wrong password?. Try again."
     exit 1
+  fi
+elif bw_login=$(bw login | grep 'export') ; then
+  # Log in to BitWarden CLI (ignore '$ ' that precedes export command)
+  eval "${bw_login:2}"
+else
+  echo "Failed to login to BitWarden. Start again."
+  exit 1
 fi
 
 # Get id_rsa and id_rsa.pub from BW
@@ -38,22 +38,13 @@ chmod 600 ~/.ssh/id_rsa.pub
 bw get notes aafebb4e-10a3-45bf-9f50-af29010d7a59 > ~/.ssh/id_rsa
 chmod 600 ~/.ssh/id_rsa
 
-# Backups
-gsettings set org.gnome.DejaDup backend 'remote'
-gsettings set org.gnome.DejaDup delete-after 182
-gsettings set org.gnome.DejaDup exclude-list ['$TRASH', '$DOWNLOAD']
-gsettings set org.gnome.DejaDup full-backup-period 90
-gsettings set org.gnome.DejaDup include-list "['$HOME/Videos', '$HOME/Templates', '$HOME/Public', '$HOME/Projects', '$HOME/Pictures', '$HOME/Obsidian', '$HOME/FiraxisLive', '$HOME/Documents', '$HOME/.vscode', '$HOME/.steam', '$HOME/.ssh', '$HOME/.gnupg', '$HOME/snap/firefox', '$HOME/snap/bitwarden']"
-gsettings set org.gnome.DejaDup periodic true
-gsettings set org.gnome.DejaDup periodic-period 7
-gsettings set org.gnome.DejaDup prompt-check 'disabled'
-gsettings set org.gnome.DejaDup tool 'duplicity'
-gsettings set org.gnome.DejaDup.Drive folder '$HOSTNAME'
-gsettings set org.gnome.DejaDup.Remote folder '$HOSTNAME'
-gsettings set org.gnome.DejaDup.Remote uri 'davs://dan@cloud.danbishop.uk/remote.php/webdav/Backup%20and%20Recovery'
-
-# Restore Backup
-# deja-dup --restore *
+# Get backup key
+export PASSPHRASE="$(bw get notes "Backup: $HOSTNAME")"
+export FTP_PASSWORD="$(bw get password cloud.danbishop.uk)"
+# Restore backup
+duplicity restore --force webdavs://dan@cloud.danbishop.uk/remote.php/webdav/Backup%20and%20Recovery/$HOSTNAME ~/tmp
+mv -f ~/tmp/home/$USER ~
+rm -rf ~/tmp
 
 # Correct icon sizes
 gsettings set org.gnome.nautilus.icon-view default-zoom-level 'medium'
@@ -65,18 +56,32 @@ gsettings set org.gnome.desktop.background picture-uri "file:///usr/share/backgr
 gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
 gsettings set org.gnome.desktop.interface gtk-theme 'Yaru-dark'
 
-# Install VSCode
-sudo snap install code --classic > /dev/null 2>&1
-
-# Install other snaps
-sudo snap install spotify kita slack openttd warzone2100 bitwarden > /dev/null 2>&1
-
 # Update apt
 sudo apt-get update > /dev/null 2>&1
 sudo apt-get dist-upgrade -y > /dev/null 2>&1
 
 # Install apt packages
-sudo apt-get install -y git curl ssh build-essential ruby ruby-dev
+sudo apt-get install -y deja-dup git curl ssh build-essential ruby ruby-dev
+
+# Backup Settings
+gsettings set org.gnome.DejaDup backend 'remote'
+gsettings set org.gnome.DejaDup delete-after 182
+gsettings set org.gnome.DejaDup exclude-list ['$TRASH', '$DOWNLOAD']
+gsettings set org.gnome.DejaDup full-backup-period 90
+gsettings set org.gnome.DejaDup include-list "['$HOME/Videos', '$HOME/Templates', '$HOME/Public', '$HOME/Pictures', '$HOME/Obsidian', '$HOME/FiraxisLive', '$HOME/Documents', '$HOME/.vscode', '$HOME/.steam', '$HOME/.ssh', '$HOME/.gnupg', '$HOME/snap/firefox', '$HOME/snap/bitwarden', '$HOME/.local/share/keyrings', '$HOME/.config/goa-1.0']"
+gsettings set org.gnome.DejaDup periodic true
+gsettings set org.gnome.DejaDup periodic-period 7
+gsettings set org.gnome.DejaDup prompt-check 'disabled'
+gsettings set org.gnome.DejaDup tool 'duplicity'
+gsettings set org.gnome.DejaDup.Drive folder '$HOSTNAME'
+gsettings set org.gnome.DejaDup.Remote folder '$HOSTNAME'
+gsettings set org.gnome.DejaDup.Remote uri 'davs://dan@cloud.danbishop.uk/remote.php/webdav/Backup%20and%20Recovery'
+
+# Install VSCode
+sudo snap install code --classic > /dev/null 2>&1
+
+# Install other snaps
+sudo snap install spotify kita slack openttd warzone2100 bitwarden > /dev/null 2>&1
 
 # Install Zoom and keep it up to date
 sudo mkdir /opt/zoom-updater > /dev/null 2>&1
@@ -103,9 +108,15 @@ echo 'snap' >> ~/.hidden
 mkdir -p ~/Projects
 
 # Clone some git repos
-git -C ~/Projects clone git@github.com:danbishop/setup.git
-git -C ~/Projects clone git@github.com:danbishop/server-setup.git
-git -C ~/Projects clone git@github.com:danbishop/danbishop.uk.git
+if [ ! -d "~/Projects/setup" ]; then
+  git -C ~/Projects clone git@github.com:danbishop/setup.git
+fi
+if [ ! -d "~/Projects/setup" ]; then
+  git -C ~/Projects clone git@github.com:danbishop/server-setup.git
+fi
+if [ ! -d "~/Projects/setup" ]; then
+  git -C ~/Projects clone git@github.com:danbishop/danbishop.uk.git
+fi
 
 # Finished
 echo "All done 🙂"
