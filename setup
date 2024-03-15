@@ -12,6 +12,9 @@ else
     echo "Not running a distribution with /etc/os-release available"
 fi
 
+# Canonical think my home IP is in the US, so fix source.list
+sudo sed -i -e 's/us.archive.ubuntu.com/gb.archive.ubuntu.com/g' /etc/apt/sources.list
+
 # Install bitwarden-cli
 sudo snap install bw
 
