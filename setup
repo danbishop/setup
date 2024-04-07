@@ -83,6 +83,9 @@ gsettings set org.gnome.DejaDup.Drive folder '$HOSTNAME'
 gsettings set org.gnome.DejaDup.Remote folder '$HOSTNAME'
 gsettings set org.gnome.DejaDup.Remote uri 'davs://dan@cloud.danbishop.uk/remote.php/webdav/Backup%20and%20Recovery'
 
+# Update snaps
+sudo snap refresh
+
 # Install VSCode
 sudo snap install code --classic > /dev/null 2>&1
 
