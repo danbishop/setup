@@ -49,7 +49,7 @@ sudo apt install -y deja-dup
 duplicity restore --force webdavs://dan@cloud.danbishop.uk/remote.php/webdav/Backup%20and%20Recovery/$HOSTNAME ~/tmp
 # Move restored backup to home directory - and overwrite files
 shopt -s dotglob
-mv -f ~/tmp/home/$USER/* ~
+rsync -a ~/tmp/home/$USER/* ~
 rm -rf ~/tmp
 
 # Correct icon sizes
