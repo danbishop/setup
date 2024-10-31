@@ -49,7 +49,7 @@ sudo apt install -y deja-dup
 duplicity restore --force webdavs://dan@cloud.danbishop.uk/remote.php/webdav/Backup%20and%20Recovery/$HOSTNAME ~/tmp
 # Move restored backup to home directory - and overwrite files
 shopt -s dotglob
-mv -f ~/tmp/home/$USER/* ~
+rsync -a ~/tmp/home/$USER/* ~
 rm -rf ~/tmp
 
 # Correct icon sizes
@@ -82,6 +82,9 @@ gsettings set org.gnome.DejaDup tool 'duplicity'
 gsettings set org.gnome.DejaDup.Drive folder '$HOSTNAME'
 gsettings set org.gnome.DejaDup.Remote folder '$HOSTNAME'
 gsettings set org.gnome.DejaDup.Remote uri 'davs://dan@cloud.danbishop.uk/remote.php/webdav/Backup%20and%20Recovery'
+
+# Update snaps
+sudo snap refresh
 
 # Install VSCode
 sudo snap install code --classic > /dev/null 2>&1
