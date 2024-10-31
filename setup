@@ -12,7 +12,7 @@ else
     echo "Not running a distribution with /etc/os-release available"
 fi
 
-# Canonical think my home IP is in the US, so fix source.list
+# Canonical think my home IP is in the US, so fix sources.list
 sudo sed -i -e 's/us.archive.ubuntu.com/gb.archive.ubuntu.com/g' /etc/apt/sources.list
 
 # Install bitwarden-cli
@@ -87,7 +87,7 @@ gsettings set org.gnome.DejaDup.Remote uri 'davs://dan@cloud.danbishop.uk/remote
 sudo snap install code --classic > /dev/null 2>&1
 
 # Install other snaps
-sudo snap install spotify kita slack openttd warzone2100 bitwarden > /dev/null 2>&1
+sudo snap install spotify kita slack openttd warzone2100 bitwarden signal-desktop jellyfinmediaplayer > /dev/null 2>&1
 
 # Install Zoom and keep it up to date
 sudo mkdir /opt/zoom-updater > /dev/null 2>&1
@@ -123,6 +123,10 @@ fi
 if [ ! -d "~/Projects/setup" ]; then
   git -C ~/Projects clone git@github.com:danbishop/danbishop.uk.git
 fi
+
+# Set webcams to use 50hz
+echo "ACTION==\"add\", SUBSYSTEM==\"video4linux\", DRIVERS==\"uvcvideo\", RUN+=\"/usr/bin/v4l2-ctl --set-ctrl=power_line_frequency=1\"" > /etc/udev/rules.d/50-webcam-50hz.rules
+udevadm trigger
 
 # Finished
 echo "All done 🙂"
