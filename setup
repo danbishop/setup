@@ -66,8 +66,8 @@ gsettings set org.gnome.desktop.interface gtk-theme 'Yaru-dark'
 sudo apt-get update > /dev/null 2>&1
 sudo apt-get dist-upgrade -y > /dev/null 2>&1
 
-# Install apt packages
-sudo apt-get install -y deja-dup git curl ssh build-essential ruby ruby-dev
+# Install apt packages (and flatpak)
+sudo apt-get install -y deja-dup git curl ssh build-essential ruby ruby-dev flatpak
 
 # Backup Settings
 gsettings set org.gnome.DejaDup backend 'remote'
@@ -90,7 +90,7 @@ sudo snap refresh
 sudo snap install code --classic > /dev/null 2>&1
 
 # Install other snaps
-sudo snap install spotify kita slack openttd warzone2100 bitwarden signal-desktop jellyfinmediaplayer > /dev/null 2>&1
+sudo snap install spotify kita slack openttd warzone2100 bitwarden signal-desktop > /dev/null 2>&1
 
 # Install Zoom and keep it up to date
 sudo mkdir /opt/zoom-updater > /dev/null 2>&1
@@ -102,6 +102,41 @@ sudo cp ./files/zoom-update.service /etc/systemd/system/zoom-update.service
 
 sudo systemctl enable --now zoom-update.timer
 sudo systemctl start zoom-update.service
+
+# Install flatpak
+flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+
+# Keep flatpaks up to date
+sudo cat << EOF | sudo tee /etc/systemd/system/update-system-flatpaks.service
+[Unit]
+Description=Update system Flatpaks
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/flatpak update --assumeyes --noninteractive --system
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+sudo cat << EOF | sudo tee /etc/systemd/system/update-system-flatpaks.timer
+[Unit]
+Description=Update system Flatpaks daily
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+EOF
+
+sudo systemctl --system enable --now update-system-flatpaks.timer
+
+# Install flatpaks
+flatpak install flathub com.github.iwalton3.jellyfin-media-player
 
 
 # Set gitconfig
