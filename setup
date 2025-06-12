@@ -79,8 +79,8 @@ gsettings set org.gnome.DejaDup periodic true
 gsettings set org.gnome.DejaDup periodic-period 7
 gsettings set org.gnome.DejaDup prompt-check 'disabled'
 gsettings set org.gnome.DejaDup tool 'duplicity'
-gsettings set org.gnome.DejaDup.Drive folder '$HOSTNAME'
-gsettings set org.gnome.DejaDup.Remote folder '$HOSTNAME'
+gsettings set org.gnome.DejaDup.Drive folder "$HOSTNAME-$USER"
+gsettings set org.gnome.DejaDup.Remote folder "$HOSTNAME-$USER"
 gsettings set org.gnome.DejaDup.Remote uri 'davs://dan@cloud.danbishop.uk/remote.php/webdav/Backup%20and%20Recovery'
 
 # Update snaps
