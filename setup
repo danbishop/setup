@@ -1,5 +1,7 @@
 #!/bin/bash
 
+COLOUR='\033[1;32m'
+
 # Get Ubuntu codename, e.g. jammy, dapper, warty, etc.
 if [[ -r /etc/os-release ]]; then
     . /etc/os-release
@@ -36,7 +38,7 @@ else
 fi
 
 # Get id_rsa and id_rsa.pub from BW
-echo "Restore SSH keys..."
+echo -e "$COLOUR Restore SSH keys..."
 bw get notes 8c6c0d1a-f9eb-4de6-988e-b22800da1ce5 > ~/.ssh/id_ed25519.pub
 chmod 600 ~/.ssh/id_ed25519.pub
 bw get notes f419ecc4-a119-4180-8e0c-b22800d9e4fc > ~/.ssh/id_ed25519
@@ -46,11 +48,11 @@ chmod 600 ~/.ssh/id_ed25519
 export PASSPHRASE="$(bw get notes 'Backup: Dejadup Key')"
 export FTP_PASSWORD="$(bw get password 'cloud.danbishop.uk Backups')"
 # Restore backup to temporary location - Duplicity won't overwrite files by design
-echo "Install deja-dup..."
+echo -e "$COLOUR Install deja-dup..."
 sudo apt install -y deja-dup
 
 if [[ ! -f ~/.files_restored_from_backup ]]; then
-  echo "Restore user home directory backup..."
+  echo -e "$COLOUR Restore user home directory backup..."
   duplicity restore --force webdavs://dan@cloud.danbishop.uk/remote.php/webdav/Backup%20and%20Recovery/$HOSTNAME-$USER ~/tmp
   # Move restored backup to home directory - and overwrite files
   shopt -s dotglob
@@ -58,7 +60,7 @@ if [[ ! -f ~/.files_restored_from_backup ]]; then
   rm -rf ~/tmp
   touch ~/.files_restored_from_backup
 else
-  echo "Files have already been restored... skipping restore. Delete .files_restored_from_backup to allow restore."
+  echo -e "$COLOUR Files have already been restored... skipping restore. Delete .files_restored_from_backup to allow restore."
 fi
 
 # Correct icon sizes
@@ -96,15 +98,15 @@ gsettings set org.gnome.DejaDup.Remote uri 'davs://dan@cloud.danbishop.uk/remote
 sudo snap refresh
 
 # Install VSCode
-echo "Installing classic snaps..."
+echo -e "$COLOUR Installing classic snaps..."
 sudo snap install code --classic > /dev/null 2>&1
 
 # Install other snaps
-echo "Installing snaps..."
+echo -e "$COLOUR Installing snaps..."
 sudo snap install spotify kita slack openttd warzone2100 bitwarden signal-desktop > /dev/null 2>&1
 
 # Install Zoom and keep it up to date
-echo "Installing Zoom..."
+echo -e "$COLOUR Installing Zoom..."
 sudo mkdir /opt/zoom-updater > /dev/null 2>&1
 sudo cp ./files/zoom-update.sh /opt/zoom-updater/zoom-update.sh > /dev/null 2>&1
 sudo chmod +x /opt/zoom-updater/zoom-update.sh > /dev/null 2>&1
@@ -116,7 +118,7 @@ sudo systemctl enable --now zoom-update.timer
 sudo systemctl start zoom-update.service
 
 # Install flatpak
-echo "Installing flatpak..."
+echo -e "$COLOUR Installing flatpak..."
 sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
 # Keep flatpaks up to date
