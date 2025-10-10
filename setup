@@ -37,10 +37,10 @@ fi
 
 # Get id_rsa and id_rsa.pub from BW
 echo "Restore SSH keys..."
-bw get notes c8c5dca7-aad6-4bd7-8df1-af29010dbf43 > ~/.ssh/id_rsa.pub
-chmod 600 ~/.ssh/id_rsa.pub
-bw get notes aafebb4e-10a3-45bf-9f50-af29010d7a59 > ~/.ssh/id_rsa
-chmod 600 ~/.ssh/id_rsa
+bw get notes 8c6c0d1a-f9eb-4de6-988e-b22800da1ce5 > ~/.ssh/id_ed25519.pub
+chmod 600 ~/.ssh/id_ed25519.pub
+bw get notes f419ecc4-a119-4180-8e0c-b22800d9e4fc > ~/.ssh/id_ed25519
+chmod 600 ~/.ssh/id_ed25519
 
 # Get backup key
 export PASSPHRASE="$(bw get notes 'Backup: Dejadup Key')"
@@ -48,12 +48,18 @@ export FTP_PASSWORD="$(bw get password 'cloud.danbishop.uk Backups')"
 # Restore backup to temporary location - Duplicity won't overwrite files by design
 echo "Install deja-dup..."
 sudo apt install -y deja-dup
-echo "Restore user home directory backup..."
-duplicity restore --force webdavs://dan@cloud.danbishop.uk/remote.php/webdav/Backup%20and%20Recovery/$HOSTNAME-$USER ~/tmp
-# Move restored backup to home directory - and overwrite files
-shopt -s dotglob
-rsync -a ~/tmp/home/$USER/* ~
-rm -rf ~/tmp
+
+if [[ ! -f ~/.files_restored_from_backup ]]; then
+  echo "Restore user home directory backup..."
+  duplicity restore --force webdavs://dan@cloud.danbishop.uk/remote.php/webdav/Backup%20and%20Recovery/$HOSTNAME-$USER ~/tmp
+  # Move restored backup to home directory - and overwrite files
+  shopt -s dotglob
+  rsync -a ~/tmp/home/$USER/* ~
+  rm -rf ~/tmp
+  touch ~/.files_restored_from_backup
+else
+  echo "Files have already been restored... skipping restore. Delete .files_restored_from_backup to allow restore."
+fi
 
 # Correct icon sizes
 gsettings set org.gnome.nautilus.icon-view default-zoom-level 'medium'
