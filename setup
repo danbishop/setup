@@ -162,7 +162,7 @@ cp ./files/.gitconfig ~/
 gsettings set org.gnome.shell favorite-apps "['firefox_firefox.desktop', 'org.gnome.Nautilus.desktop', 'rhythmbox.desktop', 'snap-store_ubuntu-software.desktop', 'code_code.desktop', 'spotify_spotify.desktop', 'org.gnome.Terminal.desktop', 'Zoom.desktop']"
 
 # Hide files
-echo 'snap' >> ~/.hidden
+grep -qxF "snap" ~/.hidden || echo "snap" >> ~/.hidden
 
 # Create Projects folder if not exist
 mkdir -p ~/Projects
