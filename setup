@@ -179,7 +179,8 @@ if [ ! -d "~/Projects/setup" ]; then
 fi
 
 # Set webcams to use 50hz
-sudo echo "ACTION==\"add\", SUBSYSTEM==\"video4linux\", DRIVERS==\"uvcvideo\", RUN+=\"/usr/bin/v4l2-ctl --set-ctrl=power_line_frequency=1\"" > /etc/udev/rules.d/50-webcam-50hz.rules
+echo -e "${COLOUR}Set webcams to use 50Hz...${ENDCOLOUR}"
+echo "ACTION==\"add\", SUBSYSTEM==\"video4linux\", DRIVERS==\"uvcvideo\", RUN+=\"/usr/bin/v4l2-ctl --set-ctrl=power_line_frequency=1\""| sudo tee /etc/udev/rules.d/50-webcam-50hz.rules
 sudo udevadm trigger
 
 # Finished
