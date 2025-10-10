@@ -123,7 +123,7 @@ echo -e "${COLOUR}Installing flatpak...${ENDCOLOUR}"
 sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
 # Keep flatpaks up to date
-sudo cat << EOF | sudo tee /etc/systemd/system/update-system-flatpaks.service
+sudo cat << EOF | sudo tee /etc/systemd/system/update-system-flatpaks.service > /dev/null
 [Unit]
 Description=Update system Flatpaks
 After=network-online.target
@@ -137,7 +137,7 @@ ExecStart=/usr/bin/flatpak update --assumeyes --noninteractive --system
 WantedBy=multi-user.target
 EOF
 
-sudo cat << EOF | sudo tee /etc/systemd/system/update-system-flatpaks.timer
+sudo cat << EOF | sudo tee /etc/systemd/system/update-system-flatpaks.timer > /dev/null
 [Unit]
 Description=Update system Flatpaks daily
 
@@ -168,13 +168,13 @@ grep -qxF "snap" ~/.hidden || echo "snap" >> ~/.hidden
 mkdir -p ~/Projects
 
 # Clone some git repos
-if [ ! -d "~/Projects/setup" ]; then
+if [ ! -d ~/Projects/setup ]; then
   git -C ~/Projects clone git@github.com:danbishop/setup.git
 fi
-if [ ! -d "~/Projects/server-setup" ]; then
+if [ ! -d ~/Projects/server-setup ]; then
   git -C ~/Projects clone git@github.com:danbishop/server-setup.git
 fi
-if [ ! -d "~/Projects/danbishop.uk" ]; then
+if [ ! -d ~/Projects/danbishop.uk ]; then
   git -C ~/Projects clone git@github.com:danbishop/danbishop.uk.git
 fi
 
