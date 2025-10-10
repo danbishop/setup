@@ -43,8 +43,8 @@ bw get notes aafebb4e-10a3-45bf-9f50-af29010d7a59 > ~/.ssh/id_rsa
 chmod 600 ~/.ssh/id_rsa
 
 # Get backup key
-export PASSPHRASE="$(bw get notes "Backup: $HOSTNAME")"
-export FTP_PASSWORD="$(bw get password cloud.danbishop.uk)"
+export PASSPHRASE="$(bw get notes 'Backup: Dejadup Key')"
+export FTP_PASSWORD="$(bw get password 'cloud.danbishop.uk Backups')"
 # Restore backup to temporary location - Duplicity won't overwrite files by design
 echo "Install deja-dup..."
 sudo apt install -y deja-dup
