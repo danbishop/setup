@@ -12,8 +12,8 @@ else
     echo "Not running a distribution with /etc/os-release available"
 fi
 
-# Canonical think my home IP is in the US, so fix sources.list
-sudo sed -i -e 's/us.archive.ubuntu.com/gb.archive.ubuntu.com/g' /etc/apt/sources.list
+# Canonical (used to) think my home IP is in the US, so fix sources.list
+# sudo sed -i -e 's/us.archive.ubuntu.com/gb.archive.ubuntu.com/g' /etc/apt/sources.list
 
 # Install bitwarden-cli
 sudo snap install bw
@@ -36,6 +36,7 @@ else
 fi
 
 # Get id_rsa and id_rsa.pub from BW
+echo "Restore SSH keys..."
 bw get notes c8c5dca7-aad6-4bd7-8df1-af29010dbf43 > ~/.ssh/id_rsa.pub
 chmod 600 ~/.ssh/id_rsa.pub
 bw get notes aafebb4e-10a3-45bf-9f50-af29010d7a59 > ~/.ssh/id_rsa
@@ -45,8 +46,10 @@ chmod 600 ~/.ssh/id_rsa
 export PASSPHRASE="$(bw get notes "Backup: $HOSTNAME")"
 export FTP_PASSWORD="$(bw get password cloud.danbishop.uk)"
 # Restore backup to temporary location - Duplicity won't overwrite files by design
+echo "Install deja-dup..."
 sudo apt install -y deja-dup
-duplicity restore --force webdavs://dan@cloud.danbishop.uk/remote.php/webdav/Backup%20and%20Recovery/$HOSTNAME ~/tmp
+echo "Restore user home directory backup..."
+duplicity restore --force webdavs://dan@cloud.danbishop.uk/remote.php/webdav/Backup%20and%20Recovery/$HOSTNAME-$USER ~/tmp
 # Move restored backup to home directory - and overwrite files
 shopt -s dotglob
 rsync -a ~/tmp/home/$USER/* ~
@@ -87,12 +90,15 @@ gsettings set org.gnome.DejaDup.Remote uri 'davs://dan@cloud.danbishop.uk/remote
 sudo snap refresh
 
 # Install VSCode
+echo "Installing classic snaps..."
 sudo snap install code --classic > /dev/null 2>&1
 
 # Install other snaps
+echo "Installing snaps..."
 sudo snap install spotify kita slack openttd warzone2100 bitwarden signal-desktop > /dev/null 2>&1
 
 # Install Zoom and keep it up to date
+echo "Installing Zoom..."
 sudo mkdir /opt/zoom-updater > /dev/null 2>&1
 sudo cp ./files/zoom-update.sh /opt/zoom-updater/zoom-update.sh > /dev/null 2>&1
 sudo chmod +x /opt/zoom-updater/zoom-update.sh > /dev/null 2>&1
@@ -104,7 +110,8 @@ sudo systemctl enable --now zoom-update.timer
 sudo systemctl start zoom-update.service
 
 # Install flatpak
-flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+echo "Installing flatpak..."
+sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 
 # Keep flatpaks up to date
 sudo cat << EOF | sudo tee /etc/systemd/system/update-system-flatpaks.service
@@ -136,7 +143,7 @@ EOF
 sudo systemctl --system enable --now update-system-flatpaks.timer
 
 # Install flatpaks
-flatpak install flathub com.github.iwalton3.jellyfin-media-player
+sudo flatpak install flathub com.github.iwalton3.jellyfin-media-player
 
 
 # Set gitconfig
