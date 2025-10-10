@@ -171,10 +171,10 @@ mkdir -p ~/Projects
 if [ ! -d "~/Projects/setup" ]; then
   git -C ~/Projects clone git@github.com:danbishop/setup.git
 fi
-if [ ! -d "~/Projects/setup" ]; then
+if [ ! -d "~/Projects/server-setup" ]; then
   git -C ~/Projects clone git@github.com:danbishop/server-setup.git
 fi
-if [ ! -d "~/Projects/setup" ]; then
+if [ ! -d "~/Projects/danbishop.uk" ]; then
   git -C ~/Projects clone git@github.com:danbishop/danbishop.uk.git
 fi
 
