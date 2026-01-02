@@ -104,7 +104,13 @@ sudo snap install code --classic > /dev/null 2>&1
 
 # Install other snaps
 echo -e "${COLOUR}Installing snaps...${ENDCOLOUR}"
-sudo snap install spotify kita slack openttd warzone2100 bitwarden signal-desktop > /dev/null 2>&1
+sudo snap install spotify kita slack openttd warzone2100 bitwarden signal-desktop chromium > /dev/null 2>&1
+
+# Allow chromium to use serial ports for web flashing
+sudo snap connect chromium:raw-usb
+
+# Add user to dialout group for serial port access
+sudo usermod -aG dialout $USER
 
 # Install Zoom and keep it up to date
 echo -e "${COLOUR}Installing Zoom...${ENDCOLOUR}"
