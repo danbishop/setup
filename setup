@@ -158,7 +158,7 @@ EOF
 sudo systemctl --system enable --now update-system-flatpaks.timer
 
 # Install flatpaks
-sudo flatpak install flathub com.github.iwalton3.jellyfin-media-player
+sudo flatpak install -y flathub org.jellyfin.JellyfinDesktop
 
 
 # Set gitconfig
